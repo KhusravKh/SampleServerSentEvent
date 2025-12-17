@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SignalR Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        #log {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+            background: #f7f7f7;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>SignalR HTML Test</h2>
+
+<div id="log"></div>
+
+<button onclick="send()">Send Message (via API)</button>
+
+<input type="text" id="message" placeholder="Enter message to server"/>
+<button onclick="sendMessage()">Send</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+<script>
+    const log = msg => {
+        const div = document.getElementById("log");
+        div.innerHTML += msg + "<br/>";
+        div.scrollTop = div.scrollHeight;
+        console.log(msg);
+    };
+
+    let accessToken = " eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IktodXNyIiwic3ViIjoiS2h1c3IiLCJqdGkiOiI5ODYyY2Q0IiwiYXVkIjpbImh0dHA6Ly9sb2NhbGhvc3Q6NDI0ODciLCJodHRwczovL2xvY2FsaG9zdDo0NDM2NyIsImh0dHA6Ly9sb2NhbGhvc3Q6NTA1NyIsImh0dHBzOi8vbG9jYWxob3N0OjcwNjQiXSwibmJmIjoxNzY1ODMzMTgwLCJleHAiOjE3NzM2MDkxODAsImlhdCI6MTc2NTgzMzE4NCwiaXNzIjoiZG90bmV0LXVzZXItand0cyJ9.d5K7gM3qTJV2lvsOIh9Cak1qbeAcfkp2Wmw9gs6svkI"
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("http://localhost:5057/stream-hub", {
+            accessTokenFactory: () => accessToken
+        })
+        .withAutomaticReconnect()
+        .build();
+
+    connection.on("SendMessageAsync", message => {
+        log("SERVER: " + message);
+    });
+
+    connection.onreconnecting(() => log("Reconnecting..."));
+    connection.onreconnected(() => log("Reconnected"));
+    connection.onclose(() => log("Disconnected"));
+
+    connection.start()
+        .then(() => log("Connected to SignalR"))
+        .catch(err => log("Connection error: " + err));
+
+    function send() {
+        fetch("http://localhost:5057/api/main/send?message=Hello from HTML", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+            .then(() => log("HTTP request sent"))
+            .catch(err => log("HTTP error: " + err));
+    }
+
+    // Send message to server
+    function sendMessage() {
+        const msg = document.getElementById("message").value;
+        if (!msg) return;
+        
+        connection.invoke("SendMessageToServer", msg)
+            .then(() => log("[Client] Sent: " + msg))
+            .catch(err => log("[Client] Error: " + err));
+        
+        document.getElementById("message").value = "";
+    }
+</script>
+
+</body>
+</html>
