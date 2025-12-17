@@ -1,0 +1,6 @@
+@SampleServerSentEvent_HostAddress = http://localhost:5263
+
+GET {{SampleServerSentEvent_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

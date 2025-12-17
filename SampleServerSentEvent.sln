@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleServerSentEvent", "SampleServerSentEvent\SampleServerSentEvent.csproj", "{EC2BDD84-051A-481A-84EF-45483BA218C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleSignalR", "SampleSignalR\SampleSignalR.csproj", "{9B19662C-4F04-4E27-A9D1-43EBCFA19839}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC2BDD84-051A-481A-84EF-45483BA218C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC2BDD84-051A-481A-84EF-45483BA218C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC2BDD84-051A-481A-84EF-45483BA218C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC2BDD84-051A-481A-84EF-45483BA218C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B19662C-4F04-4E27-A9D1-43EBCFA19839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B19662C-4F04-4E27-A9D1-43EBCFA19839}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B19662C-4F04-4E27-A9D1-43EBCFA19839}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B19662C-4F04-4E27-A9D1-43EBCFA19839}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
