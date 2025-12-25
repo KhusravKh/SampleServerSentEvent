@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Connections;
 using SampleSignalR.Hubs;
 using SampleSignalR.Services;
 
@@ -14,7 +15,27 @@ builder.Services.AddSingleton<ISseService, SseService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer();
+    .AddJwtBearer(op =>
+    {
+        op.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                // If the request is for our hub...
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    path.StartsWithSegments("/stream-hub"))
+                {
+                    // Read the token out of the query string
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 
 builder.Services.AddSignalR();
@@ -42,7 +63,10 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 
-app.MapHub<StreamHub>("/stream-hub");
+app.MapHub<StreamHub>("/stream-hub", op =>
+{
+    op.Transports = HttpTransportType.ServerSentEvents;
+});
 
 app.UseCors();
 app.UseAuthorization();
